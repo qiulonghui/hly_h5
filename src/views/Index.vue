@@ -18,7 +18,7 @@
         <img ref="cd" id="cd" class="cd" src="../assets/hejiao.png" alt="">
         <img class="pointer" src="../assets/icon-zhizhen.png" alt="">
       </div>
-      <player v-if="lyDur" :ly-play="lyPlay" :dur="lyDur" :cur-time="lyCurTime" @control-play="controlPlayLy"></player>
+      <player :ly-play="lyPlay" :dur="lyDur" :cur-time="lyCurTime" @control-play="controlPlayLy"></player>
       <div class="text-container">
         语音转文字：你好，打扰了，请在收到留言后请尽快给我回电，我们一起讨论下周头脑风景会议主题的一些细节，还有人员签到的问题。我先把初稿发到了你的邮箱，请留意查收。
       </div>
@@ -33,8 +33,7 @@
         </ul>
       </div>
       <audio ref="audio1" src="/static/music1.mp3" @ended="controlPlayYdy"></audio>
-      <audio ref="audio2" src="/static/music2.m4a" @ended="controlPlayLy" @canplay="handleAudioLoaded"
-        @timeupdate="playTimeUpdate"></audio>
+      <audio ref="audio2" src="/static/music2.m4a" @ended="controlPlayLy" @timeupdate="playTimeUpdate"></audio>
     </div>
     <m-dialog ref="mDialog" :dialogObj="dialogObj" @confirm='callTel'></m-dialog>
     <answer-set-switch ref="AnswerSetSwitch" @pause-other-play="currentPlayEnd"></answer-set-switch>
@@ -75,11 +74,12 @@ export default {
     this.audio2 = this.$refs.audio2; // 留言audio
   },
   methods: {
-    handleAudioLoaded() {
-      // 留言音频加载完毕
-      this.lyDur = this.audio2.duration;
-      this.lyCurTime = this.audio2.currentTime;
-    },
+    // handleAudioLoaded() {
+    //   // 留言音频加载完毕
+    //   this.lyDur = this.audio2.duration;
+    //   this.lyCurTime = this.audio2.currentTime;
+    //   alert(this.lyDur)
+    // },
     playTimeUpdate() {
       // 留言播放中
       this.lyDur = this.audio2.duration;
