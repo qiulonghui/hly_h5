@@ -1,0 +1,150 @@
+	
+  先鉴权，再访问页面
+  // 接口鉴权调试测试用。为了测试调式。
+  http://fx.hekouxin.com:60/ZHYD/loginto?queryType=authent&userId=15915089824
+
+  {"result":"true","msg":"鉴权成功"}
+  
+  //旧页面访问地址
+  http://fx.hekouxin.com:60/ZHYD/vindex.html
+  
+
+
+1.接口当前留言信息
+         http://fx.hekouxin.com:60/ZHYD/msglist?queryType=targetmsg
+         $.post("msgList",{queryType:"targetmsg"},function(data,status){    })
+         
+         {"size":"0"} //没数据
+
+         {"size":1,"data":[{"name":"张三","msgseq":"dfsdfdsfsdf","phone":"13560497675","content":"内容","path":"","date":"","state":"4","fromway":"","voxlen":"","msgtype":"","newmsgtime":"2018-04-07 12:00:00","cityname":"广州","province":"广东"}]}
+
+           
+            name               姓名          （按需求，如果name为空，前端展示手机号）
+            phone              手机号      
+            content            翻译内容，   为空， 抱歉，翻译不了
+            voxlen             音频时长
+            path               音频路径，不为空，为留言
+            state              消息是否已播放：4已播放，<4未播放
+            msgseq             消息id
+            newmsgtime         时间
+            cityName           城市
+		    province           省份 
+
+2.当前使用的应答语
+       http://fx.hekouxin.com:60/ZHYD/getvoxbase?queryType=getcurrvox
+	   	$.post("getvoxbase",{queryType:'getcurrvox'},function(data,status){    })
+	  
+	   {"size":"0"} //没数据
+	   
+	   {"size":1,"data":[{"id":"1","voxid":"1","title":"您拨打的用户暂时无法接听","content":"您拨打的用户暂时无法接听","duration":"8000","mp3fid":"18AD82AE142A93E4DE053C414A8C0FBC1MP33","mp3url":"http://120.198.250.195:8020/f?fid=18AD82AE142A93E4DE053C414A8C0FBC1MP33","Abstract":"","IsRecommend":"0","rate":"0"}]}
+	   
+	   title  标题
+       mp3url  音频MP3路径
+       voxid     应答语id 
+
+3.更换一批
+       currPage=1  第一页
+	   pageCount=3  每页大小
+	   //currPage=1,pageCount=3 两个有值传到后台就行了，后台都会返回5条应答语
+	   首次展示应答语列表时optWay=0
+	   更换一批 应答语列表时，optWay=1 
+	   http://fx.hekouxin.com:60/ZHYD/getvoxbase?queryType=getchangevox&currPage=1&pageCount=3&optWay=0	  
+       $.post("getvoxbase",{queryType:"getchangevox", currPage:1, pageCount:maxRows,optWay:optype},function(data,status){   })
+	  
+ 	   {"size":"0"}  //没数据
+	   {"size":5,"result":"success","data":[{"id":"0","voxid":"22618","taskid":"QQYDY0002","typeid":"4479","typename":"齐秦应答语","labid":"00","labname":"00","title":"大约在冬季","abstr":"风雪问归期，何时归故里","content":"风雪问归期，何时归故里11","duration":"0","voxname":"e377b5b5ec354f6886a932f3ca089237.mp3","voxpath":"y:/vvm/vox/voxbase/oamupload/18/01/29/12/47/e377b5b5ec354f6886a932f3ca089237.mp3","voxurl":"http://120.198.250.218:8020/f?fid=6A3553C7999B6BC5F396826EAC3038BE2MP33","voxfid":"6A3553C7999B6BC5F396826EAC3038BE2MP33","voxspxurl":"00","voxspxfid":"00","sort":"16","recom":"1","instime":"2018-01-29 12:47:26","adopt":"1090","rate":"0","state":"1"},{"id":"1","voxid":"22617","taskid":"QQYDY0003","typeid":"4479","typename":"齐秦应答语","labid":"00","labname":"00","title":"痛并快乐着","abstr":"等你声音的心情始终不变","content":"等你声音的心情始终不变10","duration":"0","voxname":"72a256bf67654cffa773351a7a48f95e.mp3","voxpath":"y:/vvm/vox/voxbase/oamupload/18/01/29/12/47/72a256bf67654cffa773351a7a48f95e.mp3","voxurl":"http://120.198.250.218:8020/f?fid=6AA5A447B1E4997C17D231E55FECF2546MP33","voxfid":"6AA5A447B1E4997C17D231E55FECF2546MP33","voxspxurl":"00","voxspxfid":"00","sort":"18","recom":"1","instime":"2018-01-29 12:48:21","adopt":"1126","rate":"0","state":"1"},{"id":"2","voxid":"22616","taskid":"QQYDY0004","typeid":"4479","typename":"齐秦应答语","labid":"00","labname":"00","title":"离家的路","abstr":"总有一天我要走出属于自己的路","content":"总有一天我要走出属于自己的路912","duration":"0","voxname":"6803a834b42f4e409e1ebf1b3781d57e.mp3","voxpath":"y:/vvm/vox/voxbase/oamupload/18/01/29/12/48/6803a834b42f4e409e1ebf1b3781d57e.mp3","voxurl":"http://120.198.250.218:8020/f?fid=DAC10098353100633F0A6EC9E9E539C68MP33","voxfid":"DAC10098353100633F0A6EC9E9E539C68MP33","voxspxurl":"00","voxspxfid":"00","sort":"20","recom":"1","instime":"2018-01-29 12:49:13","adopt":"1074","rate":"0","state":"1"},{"id":"3","voxid":"22626","taskid":"PAYDY0002","typeid":"4480","typename":"平安应答语","labid":"00","labname":"00","title":"乘风破浪","abstr":"扬心潮澎湃的帆，驾乘风破浪的船","content":"1=","duration":"0","voxname":"a67ca54888864bb7a72f007251067f2a.mp3","voxpath":"y:/vvm/vox/voxbase/oamupload/18/02/02/12/54/a67ca54888864bb7a72f007251067f2a.mp3","voxurl":"http://120.198.250.218:8020/f?fid=2A494AB4B5032D8D99EF5E14680EE28B1MP33","voxfid":"2A494AB4B5032D8D99EF5E14680EE28B1MP33","voxspxurl":"00","voxspxfid":"00","sort":"2","recom":"1","instime":"2018-02-02 12:54:50","adopt":"98","rate":"0","state":"1"},{"id":"4","voxid":"22630","taskid":"PAYDY0004","typeid":"4480","typename":"平安应答语","labid":"00","labname":"00","title":"生命的糖","abstr":"我愿做你回家路上的糖","content":"1=","duration":"0","voxname":"80bd5fad21af424fbbacc1a3dbd7d225.mp3","voxpath":"y:/vvm/vox/voxbase/oamupload/18/02/02/13/00/80bd5fad21af424fbbacc1a3dbd7d225.mp3","voxurl":"http://120.198.250.218:8020/f?fid=0A513E3256763BA3ED4A7305C88437402MP33","voxfid":"0A513E3256763BA3ED4A7305C88437402MP33","voxspxurl":"00","voxspxfid":"00","sort":"4","recom":"1","instime":"2018-02-02 13:00:38","adopt":"45","rate":"0","state":"1"}]}
+	   
+	   title     标题
+       abstr     摘要
+       voxurl    音频播放路径
+       voxfid    音频field 设置应答语需要
+       voxid  
+	   
+	   
+4.用户类型
+    http://fx.hekouxin.com:60/ZHYD/getuserinfo?queryType=getutype
+   
+   $.post("getuserinfo",{queryType:'getutype'},function(data,status){  })
+   
+   {"result":"true","usertype":"6","state":"0","effecttime":"","phone":"182****0445"}	 
+    usertype     1、6订购用户; 4、9退订用户; 2、7体验用户; 3、8 体验过期用户; 5、10普通用户;
+    usertype     为4,9退订  3,8体验过期  5,10普通用户  这些用户设置不了应答语 提示 您尚未开通和留言业务  
+
+   
+   {"result":"false"}	 
+   
+   
+5.  查询呼转状态
+    http://fx.hekouxin.com:60/ZHYD/callinfo?queryType=getcallforward&optWay=25
+    $.post("callinfo",{queryType:'getcallforward',optWay:"25"},function(data,status){    })
+	
+    {result: "true", cfbf: "1", cfnry: "1", cfnrc: "1"}
+    {"result":"false"}
+    /////
+    设置应答流程为，查询用户类型，符合用户类型的，再查询转类型：cfbf、 cfnry、 cfnry 其中有值等于1 才去设置应答语，都没有等于1的 提示：请先开启语音信箱呼转
+
+
+恢复默认应答语流程未，先查询用户类型，符合用户类型，才去掉恢复默认应答语接口， 恢复默认应答语接口，再查当前使用的应答语，这样才展示当前使用最新的应答语
+
+
+6.设置应答语 
+   fileId 为 更换一批查询出来的 voxfid
+   http://fx.hekouxin.com:60/ZHYD/setvoxbase?fileId=3A19C81E844F0094FE0534363010A1D8BMP33
+
+   {"result":"true","msg":"已成功设置欢迎语！"}
+
+   {"result":"false","msg":"设置失败"}
+
+
+
+
+7.恢复默认应答语
+  http://fx.hekouxin.com:60/ZHYD/setclientvox?query=restoreDefaultVox
+
+  $.post("setclientvox",{query:'restoreDefaultVox'},function (data,status) {  }) 
+  
+  {"result":"true","msg":"已成功设置欢迎语！"}
+
+  {"result":"false","msg":"设置失败"}
+  {"result":"false","msg":"xxxxxxxx"}
+  
+  
+  
+8.富文本
+  atTypeID 为富文本 id
+  http://fx.hekouxin.com:60/ZHYD/areaAd?queryType=richTxt&atTypeID=ba21481d
+  
+   {"code":200,"data":{"content":"<p>发斯蒂芬斯蒂芬</p>","title":"听听"},"msg":"操作成功"}
+   {"code":305,"msg":"没有登录"}
+   {"code":400,"msg":"数据异常"}
+   {"code":300,"msg":"没有数据"}
+   {"code":500,"msg":"系统异常"}
+  
+ //预留接口 
+9.轮播图
+  http://fx.hekouxin.com:60/ZHYD/areaAd?queryType=viewPager
+
+{"code":200,"data":[{"activeurl":"https://fx.hekouxin.com/whd/whd.html","content":"特殊测试","imgurl":"http://120.198.250.218:8020/f?fid=DZ125A70C3FB8F21DA66DC0372E0EE63CB7A","name":"测试分省"},{"activeurl":"https://fx.hekouxin.com/whd/whd.html","content":"特殊测试","imgurl":"http://120.198.250.218:8020/f?fid=DZ125A70C3FB8F21DA66DC0372E0EE63CB7A","name":"网络"}],"msg":"操作成功"}
+{"code":200,"data":[{"activeurl":"https://dev.10086.cn/cmpp_gd/pro?fmcg=GD190619001&amp;amp;sspId=65357","imgurl":"http://120.198.250.218:8020/f?fid=6Z1258426866C32667D38BF44B4869755F7C","name":"测试特殊符号"}],"msg":"操作成功"}
+
+ {"code":300,"msg":"没有数据"}
+ {"code":500,"msg":"系统异常"}
+  
+  
+	配置活动链接是对方的链接有特殊符号(&amp;)，需要处理下： "activeurl":"https://dev.10086.cn/cmpp_gd/pro?fmcg=GD190619001&amp;amp;sspId=65357"
+	如要处理
+	  if(item.activeurl.indexOf('&amp;') >= 0){
+                item.activeurl = item.activeurl.replace(/&amp;/g, '&');
+            }
+			
+			
+			
+10.设置呼转
+		
+			
+	cfType = "4";//呼转类型     无法接通（4不可及） 无人接听（5久叫不应） 占线（2免打扰）
+	callState = "0";//设置呼转状态  0关闭，1开启			
+	http://fx.hekouxin.com:60/ZHYD/callinfo?queryType=setcallforward&cfType=4&callState=1
+	{"result":"true","msg":"呼转设置成功！"}
+	{"result":"false","msg":"呼转设置失败！"}		
+
