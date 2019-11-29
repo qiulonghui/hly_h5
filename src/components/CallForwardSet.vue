@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visiable" class="mask" @click="close" @touchmove.prevent @mousewheel.prevent>
+  <div v-show="visiable" class="mask" @click="close" @touchmove.prevent @mousewheel.prevent>
     <div class="callforward-set" @click.stop="bubbleHack">
       <div class="header">呼叫转移设置</div>
       <div class="list">
@@ -24,6 +24,9 @@
 </template>
 
 <script>
+import icon1 from '../assets/ic_huzhuan1.png';
+import icon2 from '../assets/ic_huzhuan2.png';
+import icon3 from '../assets/ic_huzhuan3.png';
 export default {
   props: {},
   data() {
@@ -31,21 +34,21 @@ export default {
 			visiable: false,
 			list: [
 				{
-					icon:'/static/ic_huzhuan1.png',
+					icon:icon1,
 					title:'无法接通',
 					text:'关机、无信号时转至语音信箱',
 					actived: false,
 					func: ''
 				},
 				{
-					icon:'/static/ic_huzhuan2.png',
+					icon:icon2,
 					title:'无法接通',
 					text:'关机、无信号时转至语音信箱',
 					actived: false,
 					func: ''
 				},
 				{
-					icon:'/static/ic_huzhuan3.png',
+					icon:icon3,
 					title:'无法接通',
 					text:'关机、无信号时转至语音信箱',
 					actived: false,
@@ -54,7 +57,8 @@ export default {
 			]
     };
   },
-  created() {},
+  created() {
+  },
   mounted() {},
   methods: {
     close() {

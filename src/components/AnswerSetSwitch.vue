@@ -89,8 +89,8 @@ export default {
   },
   created() {},
   mounted() {
-			this.audio = this.$refs.audio;
-			console.log(this.audio)
+    this.audio = this.$refs.audio;
+    console.log(this.audio)
   },
   methods: {
     close() {

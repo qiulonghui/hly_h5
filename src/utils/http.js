@@ -4,7 +4,7 @@ import axios from 'axios'
 const http = axios.create({
   // baseURL: '/',// api的base_url
  
-  timeout: 30000, // 请求超时时间
+  timeout: 10000, // 请求超时时间
 })
 
 // request拦截器

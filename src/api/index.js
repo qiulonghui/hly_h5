@@ -16,11 +16,3 @@ export function getUserInfo(params) {
     params
   })
 }
-
-// export function payAction(data) {
-//   return http({
-//     url: '/api/wxPay/payAction',
-//     method: 'post',
-//     data: data
-//   })
-// }
