@@ -149,7 +149,7 @@ export default {
   text-align: center;
   background-color: #f3f8fe;
   padding-bottom: 28px;
-
+  box-sizing: border-box;
   .header {
     display: flex;
     align-items: center;
