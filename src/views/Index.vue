@@ -7,20 +7,21 @@
       </span>
       <div class="l-title">
         <span class="label">当前应答语：</span>
-        <span class="txt">爱你在心里口难开</span>
+        <span class="txt">{{curYdy.title}}</span>
       </div>
       <span class="change-btn" @click="showActionAnswerSet">更换</span>
     </div>
     <div class="main">
-      <div class="user-info" @click="showDialog">王大锤（122321321321）</div>
-      <div class="info-time">2019/3/18 16:29 语音留言</div>
+      <div class="user-info" @click="showDialog">{{userData.cityname}}（{{userData.name}}）</div>
+      <div class="info-time">{{userData.date}} 语音留言</div>
       <div class="cd-wrap">
         <img ref="cd" id="cd" class="cd" src="../assets/hejiao.png" alt="">
         <img class="pointer" src="../assets/icon-zhizhen.png" alt="">
       </div>
-      <player :ly-play="lyPlay" :dur="lyDur" :cur-time="lyCurTime" @control-play="controlPlayLy"></player>
+      <player v-if="curYdy.mp3url" :ly-play="lyPlay" :dur="lyDur" :cur-time="lyCurTime" @control-play="controlPlayLy">
+      </player>
       <div class="text-container">
-        语音转文字：你好，打扰了，请在收到留言后请尽快给我回电，我们一起讨论下周头脑风景会议主题的一些细节，还有人员签到的问题。我先把初稿发到了你的邮箱，请留意查收。
+        语音转文字：{{userData.content||'抱歉，无法翻译'}}
       </div>
       <div class="set-btn" @click="showActionCallSet"><img src="../assets/huzhuan .png" alt=""></div>
       <div class="row">↑向上滑动查看更多内容</div>
@@ -28,22 +29,28 @@
         <div class="tip-title">
           <span class="txt">温馨提示</span>
         </div>
-        <ul class="content">
-          <li>通话过程中拨打电话时没有和留言提示音？也没有设置呼叫转移？请发短信指令“KHZ”到10658112设置；</li>
-        </ul>
+        <ul class="content" v-html="txtTip"></ul>
       </div>
-      <audio ref="audio1" src="/static/music1.mp3" @ended="controlPlayYdy"></audio>
-      <audio ref="audio2" src="/static/music2.m4a" @ended="controlPlayLy" @timeupdate="playTimeUpdate"></audio>
+      <audio ref="audio1" :src="curYdy.mp3url" @ended="controlPlayYdy"></audio>
+      <audio ref="audio2" :src="userData.voxlen" @ended="controlPlayLy" @timeupdate="playTimeUpdate"></audio>
     </div>
     <m-dialog ref="mDialog" :dialogObj="dialogObj" @confirm='callTel'></m-dialog>
-    <answer-set-switch ref="AnswerSetSwitch" @pause-other-play="currentPlayEnd"></answer-set-switch>
+    <answer-set-switch ref="AnswerSetSwitch" :cur-ydy="curYdy" :ydy-list="ydyList" @change="getOtherYdy"
+      @update="updateCurYdy" @pause-other-play="currentPlayEnd"></answer-set-switch>
     <call-forward-set ref="CallForwardSet"></call-forward-set>
   </div>
 </template>
 
 <script>
 import Player from "../components/Player";
-import {getUserInfo, init} from "../api/index";
+import {
+  getUserInfo,
+  authentic,
+  getCurYdyMusic,
+  getYdyList,
+  getTipRichTxt
+} from "@/api/index";
+import { nextTick } from "q";
 export default {
   name: "index",
   components: {
@@ -55,31 +62,47 @@ export default {
   props: {},
   data() {
     return {
+      userData: {}, // 留言用户信息
+      curYdy: {}, // 当前应答语
+      ydyList: [], // 应答与列表
       ydyPlay: false, // 应答播放状态
       lyPlay: false, // 留言播放状态
-      lyDur: null, // 留言音频时长
-      lyCurTime: null, // 留言当前播放位置
+      lyDur: 0, // 留言音频时长
+      lyCurTime: 0, // 留言当前播放位置
+      txtTip: "", // 富文本提示内容
       dialogObj: {
-        content: "12321321",
+        content: "",
         confirmBtnTxt: "回拨"
       }
     };
   },
-  created() {
-		init({queryType: 'authent',userId: '15915089824'})
-		getUserInfo({queryType:'targetmsg'})
-	},
+  async created() {
+    await authentic({ queryType: "authent", userId: "15915089824" }); // 鉴权
+    // 留言用户信息及留言
+    getUserInfo({ queryType: "targetmsg" }).then(res => {
+			this.userData = res.data[0];
+			this.lyDur = this.userData.voxlen;
+    });
+    getCurYdyMusic({ queryType: "getcurrvox" }).then(res => {
+      this.curYdy = res.data[0];
+    });
+    getYdyList({
+      queryType: "getchangevox",
+      currPage: 1,
+      pageCount: 3,
+      optWay: 0
+    }).then(res => {
+      this.ydyList = res.data;
+    });
+    getTipRichTxt({ queryType: "richTxt", atTypeID: "b1c4644a" }).then(res => {
+      this.txtTip = res.data.content;
+    });
+  },
   mounted() {
     this.audio1 = this.$refs.audio1; // 应答语audio
     this.audio2 = this.$refs.audio2; // 留言audio
   },
   methods: {
-    // handleAudioLoaded() {
-    //   // 留言音频加载完毕
-    //   this.lyDur = this.audio2.duration;
-    //   this.lyCurTime = this.audio2.currentTime;
-    //   alert(this.lyDur)
-    // },
     playTimeUpdate() {
       // 留言播放中
       this.lyDur = this.audio2.duration;
@@ -87,9 +110,9 @@ export default {
     },
     // 播放当前应答语
     controlPlayYdy() {
-			this.lyPlay = false;
-			this.$refs.AnswerSetSwitch.initBtn();
-			this.$refs.AnswerSetSwitch.audioPlay = false;
+      this.lyPlay = false;
+      this.$refs.AnswerSetSwitch.initBtn();
+      this.$refs.AnswerSetSwitch.audioPlay = false;
       this.ydyPlay = !this.ydyPlay;
     },
 
@@ -97,22 +120,41 @@ export default {
     currentPlayEnd() {
       this.lyPlay = false;
       this.ydyPlay = false;
-    },
-
+		},
+		
     // 播放留言
     controlPlayLy() {
-			this.ydyPlay = false;
-			this.$refs.AnswerSetSwitch.initBtn();
-			this.$refs.AnswerSetSwitch.audioPlay = false;
+      this.ydyPlay = false;
+      this.$refs.AnswerSetSwitch.initBtn();
+      this.$refs.AnswerSetSwitch.audioPlay = false;
       this.lyPlay = !this.lyPlay;
     },
 
+    // 换一批应答语
+    getOtherYdy() {
+      getYdyList({
+        queryType: "getchangevox",
+        currPage: 1,
+        pageCount: 3,
+        optWay: 1
+      }).then(res => {
+        this.ydyList = res.data;
+      });
+    },
+    // 更新当前应答语
+    updateCurYdy() {
+      getCurYdyMusic({ queryType: "getcurrvox" }).then(res => {
+        this.curYdy = res.data[0];
+      });
+    },
     showDialog() {
+      this.dialogObj.content = "是否回拨" + this.userData.phone;
       this.$refs["mDialog"].show();
     },
     callTel() {
-      var a = document.createElement("a");
-      a.setAttribute("href", "tel:12121212");
+      const a = document.createElement("a");
+      const phone = this.userData.phone;
+      a.setAttribute("href", `tel:${phone}`);
       a.click();
     },
     showActionAnswerSet() {
@@ -170,6 +212,15 @@ export default {
       color: rgba(51, 54, 59, 1);
       line-height: 36px;
       text-align: left;
+      .txt {
+        display: inline-block;
+        vertical-align: middle;
+        width: 240px;
+        margin-top: -6px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
       .label {
         color: #abacac;
       }
@@ -276,6 +327,9 @@ export default {
     .content {
       text-align: left;
       color: #494d55;
+      li {
+        list-style: disc !important;
+      }
     }
   }
 }

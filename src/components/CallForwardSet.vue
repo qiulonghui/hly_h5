@@ -9,9 +9,9 @@
             <div class="m-txt">{{item.title}}</div>
             <div class="s-txt">{{item.text}}</div>
           </div>
-          <span class="set-btn">
-            <img v-show="!item.actived" src="../assets/huzhuan_btn_close.png" alt="">
-						<img v-show="item.actived" src="../assets/huzhuan_btn_open.png" alt="">
+          <span class="set-btn" @click="setStatus(item)">
+            <img v-show="item.actived==='0'" src="../assets/huzhuan_btn_close.png" alt="">
+						<img v-show="item.actived==='1'" src="../assets/huzhuan_btn_open.png" alt="">
           </span>
         </div>
       </div>
@@ -27,6 +27,8 @@
 import icon1 from '../assets/ic_huzhuan1.png';
 import icon2 from '../assets/ic_huzhuan2.png';
 import icon3 from '../assets/ic_huzhuan3.png';
+import {getCallForwardStatus, setCallForwardStatus} from '@/api/index.js'
+
 export default {
   props: {},
   data() {
@@ -37,30 +39,52 @@ export default {
 					icon:icon1,
 					title:'无法接通',
 					text:'关机、无信号时转至语音信箱',
-					actived: false,
-					func: ''
+					actived: '',
+					typeID: 4
 				},
 				{
 					icon:icon2,
-					title:'无法接通',
-					text:'关机、无信号时转至语音信箱',
-					actived: false,
-					func: ''
+					title:'占线',
+					text:'手机占线、主动挂机时转至语音信箱',
+					actived: '',
+					typeID: 2
 				},
 				{
 					icon:icon3,
-					title:'无法接通',
-					text:'关机、无信号时转至语音信箱',
-					actived: false,
-					func: ''
+					title:'无人接听',
+					text:'无人接听时转至语音信箱',
+					actived: '',
+					typeID: 5
 				}
 			]
     };
   },
   created() {
+		getCallForwardStatus({queryType:'getcallforward',optWay:"25"}).then(res=>{
+			// 返回结果中 1表示开启 0表示关闭
+			this.list[0].actived = res.cfnrc;
+			this.list[1].actived = res.cfbf;
+			this.list[2].actived = res.cfnry;
+		})
   },
   mounted() {},
   methods: {
+		setStatus(item) {
+			setCallForwardStatus({
+				queryType: 'setcallforward',
+				cfType: item.typeID,
+				callState: item.actived==='1' ? '0' : '1'
+			}).then(res=>{
+				const {msg, result} = res;
+				if(result==='true') { // 后端返回的result是字符串。。
+					item.actived = item.actived==='1' ? '0' : '1';
+					this.$toast.success(msg)
+					this.$emit('update');
+				}else{
+					this.$toast.fail(msg)
+				}
+			})
+		},
     close() {
       this.visiable = false;
     },
@@ -80,7 +104,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 9999;
+  z-index: 999;
   background-color: rgba($color: #000000, $alpha: 0.5);
   .callforward-set {
     position: absolute;

@@ -4,32 +4,32 @@
       <div class="header">
         <div class="h-text">当前应答语：</div>
         <div class="defult-item">
-          <span class="play-btn" @click="handlePlay(list[0])">
-            <img v-show="!list[0].play" src="../assets/h_play.png" alt="">
-            <img v-show="list[0].play" src="../assets/icon-ydy_stop@2x.png" alt="">
+          <span class="play-btn" @click="handlePlay(selfCurYdy)">
+            <img v-show="!selfCurYdy.play" src="../assets/h_play.png" alt="">
+            <img v-show="selfCurYdy.play" src="../assets/icon-ydy_stop@2x.png" alt="">
           </span>
           <div class="text">
-            <div class="n">{{list[0].title}}</div>
+            <div class="n">{{selfCurYdy.title}}</div>
           </div>
-          <span class="border-btn">恢复默认</span>
+          <span class="border-btn" @click="resetYdy">恢复默认</span>
         </div>
       </div>
       <div class="list">
-        <div class="item" v-for="item in list" :key="item.id">
+        <div class="item" v-for="item in selfYdyList" :key="item.id" >
           <span class="play-btn" @click="handlePlay(item)">
             <img v-show="!item.play" src="../assets/h_play.png" alt="">
             <img v-show="item.play" src="../assets/icon-ydy_stop@2x.png" alt="">
           </span>
           <div class="text">
             <div class="n">{{item.title}}</div>
-            <div class="s">{{item.text}}</div>
+            <div class="s">{{item.abstr}}</div>
           </div>
-          <span class="border-btn">更换</span>
+          <span class="border-btn" @click="setYdy(item.voxfid)">更换</span>
         </div>
       </div>
       <div class="footer">
         <div class="btn close" @click="close">关闭</div>
-        <div class="btn other">换一批</div>
+        <div class="btn other" @click="other">换一批</div>
       </div>
     </div>
     <audio ref="audio" :src="audioSrc" @ended="handlePlayEnd"></audio>
@@ -37,60 +37,23 @@
 </template>
 
 <script>
+import { setYdy, resetYdy } from "../api/index";
+
 export default {
-  props: {},
+  props: {
+		curYdy: Object,
+		YdyList: Array
+	},
   data() {
     return {
       audioPlay: false,
       visiable: false,
       audioSrc: "",
-      list: [
-        {
-          id: 1,
-          play: false,
-          title: "爱你在心口难开1",
-          text: "守护平安团圆，有我一路相伴",
-          url: "/static/music1.mp3"
-        },
-        {
-          id: 2,
-          play: false,
-          title: "爱你在心口难开2",
-          text: "守护平安团圆，有我一路相伴",
-          url:
-            "http://old.haolingsheng.com/download/ring/000/083/94361f9da252817d600d076d3dc13baa.mp3"
-        },
-        {
-          id: 3,
-          play: false,
-          title: "爱你在心口难开3",
-          text: "守护平安团圆，有我一路相伴",
-          url:
-            "http://hao.haolingsheng.com/ring/000/995/f1b408f77bc8d27a6f5665c1be02df5d.mp3"
-        },
-        {
-          id: 4,
-          play: false,
-          title: "爱你在心口难开4",
-          text: "守护平安团圆，有我一路相伴",
-          url:
-            "http://hao.haolingsheng.com/ring/000/995/fdd1115ac2c3e1dc84ea878082741e1b.mp3"
-        },
-        {
-          id: 5,
-          play: false,
-          title: "爱你在心口难开5",
-          text: "守护平安团圆，有我一路相伴",
-          url:
-            "http://hao.haolingsheng.com/ring/000/995/53142bfe578261cc624b0247baea084a.mp3"
-        }
-      ]
     };
   },
   created() {},
   mounted() {
     this.audio = this.$refs.audio;
-    console.log(this.audio)
   },
   methods: {
     close() {
@@ -100,26 +63,70 @@ export default {
       this.visiable = true;
     },
     handlePlay(item) {
-      this.audioSrc = item.url;
+      this.audioSrc = item.voxurl || this.curYdy.mp3url;
       if (!item.play) {
-        this.initBtn()
-      }
-      item.play = !item.play;
+				this.initBtn()
+			}
+			if(item !== this.curYdy){
+				this.curYdy.play=false;
+			}
+			item.play = !item.play;
 			this.audioPlay = item.play;
 			this.$emit('pause-other-play')
 		},
+		other() {
+			this.$emit('change')
+		},
+		setYdy(id) {
+			setYdy({fileId:id}).then(res=>{
+				const {msg, result} = res;
+				if(result==='true') { // 后端返回的result是字符串。。
+					this.$emit('update');
+				}else{
+					this.$toast.fail(msg)
+				}
+			})
+		},
+		// 恢复默认应答语
+		resetYdy() {
+			resetYdy({query:'restoreDefaultVox'}).then(res=>{
+				const {msg, result} = res;
+				if(result==='true') { // 后端返回的result是字符串。。
+					this.$toast.success(msg)
+					this.$emit('update');
+				}else{
+					this.$toast.fail(msg)
+				}
+			})
+		},
 		handlePlayEnd() {
+			this.curYdy.play=false;
 			this.initBtn();
 		},
+
+		// 重置按钮
 		initBtn() {
-			this.list.map(x => {
+			this.selfYdyList.forEach(x => {
 				x.play = false;
 			});
 		},
     bubbleHack() {
       return false;
     }
-  },
+	},
+	computed: {
+		selfYdyList() {
+			let arr = this.YdyList.map(item=>{
+				this.$set(item,'play',false)
+				return item;
+			})
+			return arr;
+		},
+		selfCurYdy() {
+			this.$set(this.curYdy,'play',false)
+			return 	this.curYdy;
+		}
+	},
   watch: {
     audioPlay(newVal) {
       if (newVal) {
@@ -131,9 +138,11 @@ export default {
       }
     },
     audioSrc() {
-      this.$nextTick(() => {
-        this.audio.play();
-      });
+      if(this.audioPlay) {
+				this.$nextTick(() => {
+					this.audio.play();
+				});
+			}
     }
   }
 };
@@ -145,7 +154,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 9999;
+  z-index: 999;
   background-color: rgba($color: #000000, $alpha: 0.5);
 
   .container {
