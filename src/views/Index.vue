@@ -25,14 +25,14 @@
       </div>
       <div class="set-btn" @click="showActionCallSet"><img src="../assets/huzhuan .png" alt=""></div>
       <div class="row">↑向上滑动查看更多内容</div>
-      <div class="tip">
+      <div class="tip" v-show="txtTip">
         <div class="tip-title">
           <span class="txt">温馨提示</span>
         </div>
         <ul class="content" v-html="txtTip"></ul>
       </div>
       <audio ref="audio1" :src="curYdy.mp3url" @ended="controlPlayYdy"></audio>
-      <audio ref="audio2" :src="userData.voxlen" @ended="controlPlayLy" @timeupdate="playTimeUpdate"></audio>
+      <audio ref="audio2" :src="userData.path" @ended="controlPlayLy" @timeupdate="playTimeUpdate"></audio>
     </div>
     <m-dialog ref="mDialog" :dialogObj="dialogObj" @confirm='callTel'></m-dialog>
     <answer-set-switch ref="AnswerSetSwitch" :cur-ydy="curYdy" :ydy-list="ydyList" @change="getOtherYdy"
@@ -50,7 +50,6 @@ import {
   getYdyList,
   getTipRichTxt
 } from "@/api/index";
-import { nextTick } from "q";
 export default {
   name: "index",
   components: {
@@ -78,7 +77,8 @@ export default {
   },
   async created() {
 		if(process.env.NODE_ENV==='development'){
-			await authentic({ queryType: "authent", userId: "15915089824" }); // 鉴权，打包上线的时候不需要调用
+			// 鉴权，打包上线的时候不需要调用
+			await authentic({ queryType: "authent", userId: "15915089824" });
 		}
     // 留言用户信息及留言
     getUserInfo({ queryType: "targetmsg" }).then(res => {
@@ -97,6 +97,10 @@ export default {
       this.ydyList = res.data;
     });
     getTipRichTxt({ queryType: "richTxt", atTypeID: "b1c4644a" }).then(res => {
+			if(!res.data) {
+				this.txtTip = '';
+				return
+			}
       this.txtTip = res.data.content;
     });
   },
@@ -146,7 +150,8 @@ export default {
     // 更新当前应答语
     updateCurYdy() {
       getCurYdyMusic({ queryType: "getcurrvox" }).then(res => {
-        this.curYdy = res.data[0];
+				this.curYdy = res.data[0];
+				this.$toast.success('修改应答语成功')
       });
     },
     showDialog() {
@@ -189,7 +194,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .page {
-  min-height: 100%;
   text-align: center;
   background-color: #f3f8fe;
   padding-bottom: 28px;
