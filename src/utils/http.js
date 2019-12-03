@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Toast } from 'vant';
-
+console.log(process.env)
 // 创建axios实例
 const http = axios.create({
   // baseURL: 'http://fx.hekouxin.com:60',// api的base_url

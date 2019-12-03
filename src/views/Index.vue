@@ -77,7 +77,9 @@ export default {
     };
   },
   async created() {
-    await authentic({ queryType: "authent", userId: "15915089824" }); // 鉴权
+		if(process.env.NODE_ENV==='development'){
+			await authentic({ queryType: "authent", userId: "15915089824" }); // 鉴权，打包上线的时候不需要调用
+		}
     // 留言用户信息及留言
     getUserInfo({ queryType: "targetmsg" }).then(res => {
 			this.userData = res.data[0];

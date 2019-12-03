@@ -16,7 +16,14 @@ export function getUserInfo(params) {
     params
   })
 }
-
+// 查询当前用户类型
+export function getUserType(params) {
+  return http({
+    url: '/ZHYD/getuserinfo',
+    method: 'get',
+    params
+  })
+}
 // 获取当前应答语
 export function getCurYdyMusic(params) {
   return http({

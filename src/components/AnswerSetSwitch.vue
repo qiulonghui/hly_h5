@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { setYdy, resetYdy } from "../api/index";
+import {getUserType, getCallForwardStatus, setYdy, resetYdy } from "../api/index";
 
 export default {
   props: {
@@ -48,7 +48,8 @@ export default {
     return {
       audioPlay: false,
       visiable: false,
-      audioSrc: "",
+			audioSrc: "",
+			userType: null
     };
   },
   created() {},
@@ -77,27 +78,49 @@ export default {
 		other() {
 			this.$emit('change')
 		},
-		setYdy(id) {
-			setYdy({fileId:id}).then(res=>{
-				const {msg, result} = res;
-				if(result==='true') { // 后端返回的result是字符串。。
-					this.$emit('update');
+		async setYdy(id) {
+			const {usertype} = await getUserType({queryType:'getutype'});
+			this.userType = usertype;
+			// 设置应答流程为，查询用户类型，符合用户类型的，再查询转类型：cfbf、 cfnry、 cfnry 其中有值等于1 才去设置应答语，都没有等于1的 提示：请先开启语音信箱呼转
+			// usertype 为4,9退订 3,8体验过期  5,10普通用户  这些用户设置不了应答语 提示 您尚未开通和留言业务  
+			const notAllowList = ['4','9','3','8','5','10',]
+			if(notAllowList.indexOf(this.userType) !== -1){ 
+				this.$toast.fail('您尚未开通和留言业务')
+			}else{
+				const {cfbf, cfnrc, cfnry} = await getCallForwardStatus({queryType:'getcallforward',optWay:"25"});
+				if([cfbf, cfnrc, cfnry].indexOf('1') === -1) {
+					this.$toast.fail('请先开启语音信箱呼转')
 				}else{
-					this.$toast.fail(msg)
+					// 设置应答语
+					setYdy({fileId:id}).then(res=>{
+						const {msg, result} = res;
+						if(result==='true') { // 后端返回的result是字符串。。
+							this.$emit('update');
+						}else{
+							this.$toast.fail(msg)
+						}
+					})
 				}
-			})
+			}
 		},
 		// 恢复默认应答语
+		// 恢复默认应答语流程，先查询用户类型，符合用户类型，才去调恢复默认应答语接口， 恢复默认应答语接口，再查当前使用的应答语，这样才展示当前使用最新的应答语
+
 		resetYdy() {
-			resetYdy({query:'restoreDefaultVox'}).then(res=>{
-				const {msg, result} = res;
-				if(result==='true') { // 后端返回的result是字符串。。
-					this.$toast.success(msg)
-					this.$emit('update');
-				}else{
-					this.$toast.fail(msg)
-				}
-			})
+			const notAllowList = ['4','9','3','8','5','10',]
+			if(notAllowList.indexOf(this.userType) !== -1){ 
+				this.$toast.fail('您尚未开通和留言业务')
+			}else{
+				resetYdy({query:'restoreDefaultVox'}).then(res=>{
+					const {msg, result} = res;
+					if(result==='true') { // 后端返回的result是字符串。。
+						this.$toast.success(msg)
+						this.$emit('update');
+					}else{
+						this.$toast.fail(msg)
+					}
+				})
+			}
 		},
 		handlePlayEnd() {
 			this.curYdy.play=false;
