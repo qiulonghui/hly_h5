@@ -1,10 +1,6 @@
 module.exports = {
 	plugins: {
-		'postcss-import': {},
-		'postcss-url': {},
-		'postcss-aspect-ratio-mini': {},
-		'postcss-write-svg': { utf8: false },
-		'postcss-cssnext': {},
+		"autoprefixer": {},
 		'postcss-px-to-viewport': {
 			unitToConvert: 'px',
 			viewportWidth: 750,
@@ -15,12 +11,5 @@ module.exports = {
 			mediaQuery: false,
 			exclude: [/node_modules/]
 		},
-		'postcss-viewport-units': {},
-		'cssnano': {
-			"cssnano-preset-advanced": {
-				zindex: false,
-				autoprefixer: false
-			}
-		}
 	}
 }
