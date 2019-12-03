@@ -226,6 +226,15 @@ export default {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+				// p{
+				// 	position: relative;
+				// 	top: 0px;
+				// 	left: 0px;
+				// 	right: 0px;
+				// 	margin: auto;
+				// 	text-align: center;
+				// 	animation: anim2 8s linear infinite;
+				// }
       }
       .label {
         color: #abacac;
@@ -351,5 +360,12 @@ export default {
   100% {
     transform: rotate(360deg);
   }
+}
+@keyframes anim2 {
+    0% { left: 200px; opacity: 0.2}
+    25% { left: 100px; opacity: 0.6}
+    50% { left: 0px; opacity: 1}
+    75% { left: -100px; opacity: 0.6}
+    100% { left: -200px; opacity: 0.2}
 }
 </style>
