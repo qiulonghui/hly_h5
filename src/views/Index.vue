@@ -7,7 +7,9 @@
       </span>
       <div class="l-title">
         <span class="label">当前应答语：</span>
-        <span class="txt">{{curYdy.title}}</span>
+        <div class="txt" @click="controlPlayYdy">
+					<div class="box" ref="textAnimaBox"><p ref="textItem">{{curYdy.title}}</p><p class="clone">{{curYdy.title}}</p></div>
+				</div>
       </div>
       <span class="change-btn" @click="showActionAnswerSet">更换</span>
     </div>
@@ -101,12 +103,14 @@ export default {
 				this.txtTip = '';
 				return
 			}
-      this.txtTip = res.data.content;
+			this.txtTip = res.data.content;
     });
   },
   mounted() {
     this.audio1 = this.$refs.audio1; // 应答语audio
-    this.audio2 = this.$refs.audio2; // 留言audio
+		this.audio2 = this.$refs.audio2; // 留言audio
+		this.textDom = this.$refs.textAnimaBox;
+		this.textItem = this.$refs.textItem;
   },
   methods: {
     playTimeUpdate() {
@@ -151,7 +155,9 @@ export default {
     updateCurYdy() {
       getCurYdyMusic({ queryType: "getcurrvox" }).then(res => {
 				this.curYdy = res.data[0];
-				this.$toast.success('修改应答语成功')
+				this.$toast.success('设置成功');
+				this.ydyPlay = false;
+				this.textDom.style.left = 0 +"px";
       });
     },
     showDialog() {
@@ -169,24 +175,37 @@ export default {
     },
     showActionCallSet() {
       this.$refs["CallForwardSet"].show();
-    }
+		},
+		textAnim() {
+			if(!this.ydyPlay) {
+				return
+			}
+			this.textDom.style.left = (this.textDom.offsetLeft-1)+"px";
+			if(Math.abs(this.textDom.offsetLeft) == this.textItem.offsetWidth ) {
+				this.textDom.style.left = 0 +"px";
+			}
+			setTimeout(()=>{
+				this.textAnim();
+			}, 20);
+		}
   },
   watch: {
     ydyPlay(newVal) {
       if (newVal) {
-        this.audio1.play();
+				this.audio1.play();
       } else {
-        this.audio1.pause();
-      }
+				this.audio1.pause();
+			}
+			this.textAnim()
     },
     lyPlay(newVal) {
-      const cdDom = this.$refs.cd;
+			const cdDom = this.$refs.cd;
       if (newVal) {
         this.audio2.play();
-        cdDom.style.animationPlayState = "running";
+				cdDom.style.animationPlayState = "running";
       } else {
         this.audio2.pause();
-        cdDom.style.animationPlayState = "paused";
+				cdDom.style.animationPlayState = "paused";
       }
     }
   }
@@ -213,28 +232,32 @@ export default {
     }
     .l-title {
       flex: 1;
+			display: flex;
       font-size: 30px;
       font-weight: 500;
       color: rgba(51, 54, 59, 1);
       line-height: 36px;
       text-align: left;
       .txt {
+				position: relative;
         display: inline-block;
         vertical-align: middle;
-        width: 240px;
-        margin-top: -6px;
+        width: 280px;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
-				// p{
-				// 	position: relative;
-				// 	top: 0px;
-				// 	left: 0px;
-				// 	right: 0px;
-				// 	margin: auto;
-				// 	text-align: center;
-				// 	animation: anim2 8s linear infinite;
-				// }
+				.box{
+					position: absolute;
+					left: 0px;
+					animation: anim2 5s linear infinite;
+					animation-play-state: paused;
+					p{
+						display: inline-block;
+						min-width: 280px;
+						text-align: left;
+						margin: 0;
+					}
+				}
       }
       .label {
         color: #abacac;
@@ -249,6 +272,7 @@ export default {
       color: rgba(40, 136, 255, 1);
       line-height: 48px;
       font-size: 28px;
+			margin-left: 20px;
     }
   }
 
@@ -360,12 +384,5 @@ export default {
   100% {
     transform: rotate(360deg);
   }
-}
-@keyframes anim2 {
-    0% { left: 200px; opacity: 0.2}
-    25% { left: 100px; opacity: 0.6}
-    50% { left: 0px; opacity: 1}
-    75% { left: -100px; opacity: 0.6}
-    100% { left: -200px; opacity: 0.2}
 }
 </style>
