@@ -216,8 +216,10 @@ export default {
           }
         }
         .border-btn {
+					display: inline-flex; 
+					justify-content: center;
+					align-items: center;
           height: 50px;
-          line-height: 52px;
           padding: 0 30px;
           border: 2px solid #2888ff;
           border-radius: 25px;
@@ -258,7 +260,9 @@ export default {
         }
         .border-btn {
           height: 50px;
-          line-height: 52px;
+          display: inline-flex; 
+					justify-content: center;
+					align-items: center;
           padding: 0 30px;
           border: 2px solid #2888ff;
           border-radius: 25px;

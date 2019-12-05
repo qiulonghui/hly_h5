@@ -270,9 +270,11 @@ export default {
       border: 2px solid rgba(40, 136, 255, 1);
       border-radius: 24px;
       color: rgba(40, 136, 255, 1);
-      line-height: 49px;
       font-size: 28px;
 			margin-left: 20px;
+			display: inline-flex; 
+			justify-content: center;
+      align-items: center;
     }
   }
 
