@@ -260,7 +260,7 @@ export default {
         }
         .border-btn {
           height: 50px;
-          display: inline-flex; 
+          display: flex; 
 					justify-content: center;
 					align-items: center;
           padding: 0 30px;
