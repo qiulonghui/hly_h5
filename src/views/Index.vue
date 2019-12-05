@@ -270,7 +270,7 @@ export default {
       border: 2px solid rgba(40, 136, 255, 1);
       border-radius: 24px;
       color: rgba(40, 136, 255, 1);
-      line-height: 48px;
+      line-height: 49px;
       font-size: 28px;
 			margin-left: 20px;
     }
@@ -329,7 +329,7 @@ export default {
   .row {
     text-align: center;
     color: #999999;
-    font-size: 13px;
+    font-size: 26px;
     margin-top: 25px;
     margin-bottom: 58px;
   }
@@ -363,11 +363,14 @@ export default {
         padding: 0 20px;
       }
     }
-    .content {
+    /deep/ .content {
       text-align: left;
       color: #494d55;
       li {
-        list-style: disc !important;
+        list-style: disc;
+				margin-left: 30px;
+				margin-bottom: 38px;
+				color: #494D55;
       }
     }
   }

@@ -1,10 +1,16 @@
 import axios from 'axios'
 import { Toast } from 'vant';
-console.log(process.env)
+console.log(process.env);
+// 开发环境 http://fx.hekouxin.com:60/ZHYD		
+// 生产的测试环境 http://fx.hekouxin.com:60/ZHYD																						 
+// 生产的正式环境 http://fx.hekouxin.com:60/Z
+let baseURL = '/ZHYD';
+if(process.env.NODE_ENV==='production'){
+	baseURL= process.env.VUE_APP_BASEURL||'/ZHYD'; 
+}
 // 创建axios实例
 const http = axios.create({
-  // baseURL: 'http://fx.hekouxin.com:60',// api的base_url
- 
+	baseURL,
   timeout: 10000, // 请求超时时间
 })
 

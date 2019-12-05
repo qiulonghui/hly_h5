@@ -2,7 +2,7 @@ import http from '@/utils/http'
 // 鉴权
 export function authentic(params) {
   return http({
-    url: '/ZHYD/loginto',
+    url: '/loginto',
     method: 'get',
     params
   })
@@ -11,7 +11,7 @@ export function authentic(params) {
 // 查询用户信息及留言信息
 export function getUserInfo(params) {
   return http({
-    url: '/ZHYD/msglist',
+    url: '/msglist',
     method: 'get',
     params
   })
@@ -19,7 +19,7 @@ export function getUserInfo(params) {
 // 查询当前用户类型
 export function getUserType(params) {
   return http({
-    url: '/ZHYD/getuserinfo',
+    url: '/getuserinfo',
     method: 'get',
     params
   })
@@ -27,7 +27,7 @@ export function getUserType(params) {
 // 获取当前应答语
 export function getCurYdyMusic(params) {
   return http({
-    url: '/ZHYD/getvoxbase',
+    url: '/getvoxbase',
     method: 'get',
     params
   })
@@ -36,7 +36,7 @@ export function getCurYdyMusic(params) {
 // 获取应答语列表
 export function getYdyList(params) {
   return http({
-    url: '/ZHYD/getvoxbase',
+    url: '/getvoxbase',
     method: 'get',
     params
   })
@@ -45,7 +45,7 @@ export function getYdyList(params) {
 // 设置应答语
 export function setYdy(params) {
   return http({
-    url: '/ZHYD/setvoxbase',
+    url: '/setvoxbase',
     method: 'get',
     params
   })
@@ -54,7 +54,7 @@ export function setYdy(params) {
 // 恢复默认应答语
 export function resetYdy(params) {
   return http({
-    url: '/ZHYD/setclientvox',
+    url: '/setclientvox',
     method: 'get',
     params
   })
@@ -63,7 +63,7 @@ export function resetYdy(params) {
 // 获取温馨提示
 export function getTipRichTxt(params) {
   return http({
-    url: '/ZHYD/areaAd',
+    url: '/areaAd',
     method: 'get',
     params
   })
@@ -72,7 +72,7 @@ export function getTipRichTxt(params) {
 // 查询转呼状态
 export function getCallForwardStatus(params) {
   return http({
-    url: '/ZHYD/callinfo',
+    url: '/callinfo',
     method: 'get',
     params
   })
@@ -83,7 +83,7 @@ export function getCallForwardStatus(params) {
 // callState 设置呼转状态  0关闭，1开启	
 export function setCallForwardStatus(params) {
   return http({
-    url: '/ZHYD/callinfo',
+    url: '/callinfo',
     method: 'get',
     params
   })
