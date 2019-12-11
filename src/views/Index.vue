@@ -115,7 +115,6 @@ export default {
   methods: {
     playTimeUpdate() {
       // 留言播放中
-      this.lyDur = this.audio2.duration;
       this.lyCurTime = this.audio2.currentTime;
     },
     // 播放当前应答语

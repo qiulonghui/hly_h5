@@ -39,7 +39,7 @@ export default {
 	},
 	computed:{
 		percent() {
-			return Math.round((this.curTime/this.dur)*100)
+			return Math.round((this.curTime/Number(this.dur))*100)
 		}
 	}
 };

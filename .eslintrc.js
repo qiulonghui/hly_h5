@@ -6,7 +6,9 @@ module.exports = {
     browser: true
   },
   extends: ['plugin:vue/essential', 'eslint:recommended'],
-  rules: {},
+  rules: {
+		'no-console':'off'
+	},
   parserOptions: {
     parser: 'babel-eslint'
   }
