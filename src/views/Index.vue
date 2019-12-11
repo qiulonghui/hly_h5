@@ -68,7 +68,7 @@ export default {
       ydyList: [], // 应答与列表
       ydyPlay: false, // 应答播放状态
       lyPlay: false, // 留言播放状态
-      lyDur: 0, // 留言音频时长
+      lyDur: 1, // 留言音频时长
       lyCurTime: 0, // 留言当前播放位置
       txtTip: "", // 富文本提示内容
       dialogObj: {

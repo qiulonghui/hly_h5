@@ -66,7 +66,7 @@ export default {
     margin: 0 20px;
     overflow: hidden;
     .inline-bar {
-      width: 10%;
+      width: 0;
       height: 8px;
       background-color: #2888ff;
     }
