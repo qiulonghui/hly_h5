@@ -5,7 +5,7 @@ module.exports = {
     node: true,
     browser: true
   },
-  extends: ['plugin:vue/essential', 'eslint:recommended'],
+  extends: ['plugin:vue/essential'],
   rules: {
 		'no-console':'off'
 	},

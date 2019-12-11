@@ -12,9 +12,10 @@ module.exports = {
 	},
 	configureWebpack: {
     externals: { // 这些通过CDN引入，不用打包到vendors
-      'vue': 'Vue',
+      vue: 'Vue',
 			'vue-router': 'VueRouter',
-			'axios':'axios'
+			vuex: 'Vuex',
+			axios:'axios'
     }
   }
 }
