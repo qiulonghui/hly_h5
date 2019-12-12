@@ -6,7 +6,7 @@ Vue.use(Router)
 
 export default new Router({
   mode: 'hash',
-  // base:'/ZHYD/',
+  // base: process.env.NODE_ENV==='development' ? '/' : process.env.VUE_APP_BASEPATH,
   routes: [
     {
       path: '*',

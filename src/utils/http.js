@@ -4,10 +4,9 @@ console.log(process.env);
 // 开发环境 http://fx.hekouxin.com:60/ZHYD		
 // 生产的测试环境 http://fx.hekouxin.com:60/ZHYD																						 
 // 生产的正式环境 http://fx.hekouxin.com:60/Z
-let baseURL = '/ZHYD';
-if(process.env.NODE_ENV==='production'){
-	baseURL= process.env.VUE_APP_BASEURL||'/ZHYD'; 
-}
+
+let	baseURL= process.env.VUE_APP_BASEPATH||'/ZHYD'; 
+
 // 创建axios实例
 const http = axios.create({
 	baseURL,
