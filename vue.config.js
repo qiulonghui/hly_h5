@@ -7,5 +7,13 @@ module.exports = {
 				changeOrigin: true,
       }
     }
-	}
+	},
+	configureWebpack: {
+    externals: { // 这些通过CDN引入，不用打包到vendors
+      vue: 'Vue',
+			'vue-router': 'VueRouter',
+			vuex: 'Vuex',
+			axios:'axios'
+    }
+  }
 }
